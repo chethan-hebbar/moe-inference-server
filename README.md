@@ -16,8 +16,6 @@ The primary goal is to demonstrate a comprehensive understanding of both frontie
 
 The inference server is designed as a distributed system with a single point of entry. The API Gateway is the "brain" that orchestrates the calls to the various "expert" AI services.
 
-![System Architecture Diagram](architecture.png)
-*(Note: You should replace this with a real screenshot of your architectural diagram and name the file `architecture.png`)*
 
 ### Service Breakdown:
 
