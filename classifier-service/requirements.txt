@@ -1,0 +1,8 @@
+--extra-index-url https://download.pytorch.org/whl/cpu
+torch==2.0.1
+torchtext==0.15.2
+torchdata==0.6.1
+fastapi
+uvicorn[standard]
+portalocker>=2.0.0
+numpy<2
