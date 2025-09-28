@@ -67,8 +67,8 @@ The overall system is managed by Docker Compose, with the API Gateway acting as 
     *   ...and so on for the `embedding` and `classifier` weights.
 3.  **Clone the Repository:**
     ```bash
-    git clone <your-repo-url>
-    cd <your-repo-name>
+    git clone https://github.com/chethan-hebbar/moe-inference-server.git
+    cd moe-inference-server
     ```
 
 ### Launching the System
@@ -77,4 +77,4 @@ The entire 13-service application can be launched with a single command from the
 
 ```bash
 # Build and launch all services
-docker-compose -f docker-compose.all.yml up --build
+docker-compose -f docker-compose.yml up --build
