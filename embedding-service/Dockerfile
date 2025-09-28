@@ -1,20 +1,19 @@
 FROM python:3.10-slim
 
-# Set the working directory in the container
 WORKDIR /app
+ENV PYTHONUNBUFFERED=1
+# PYTHONPATH is less critical here but is good practice
+ENV PYTHONPATH=/app
 
-# Copy the file that lists the dependencies
+# Copy the service-specific requirements file
 COPY requirements.txt .
 
+# Install dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy the application code into the container
+# Copy this service's entire 'app' directory, which now contains
+# its main.py, all model definitions, and weights.
 COPY ./app .
 
-# Expose the port the service will run on.clear
-# We will choose the port in docker-compose.
 EXPOSE 8000
-
-# The command to run when the container launches.
-# Note: The EXPERT_ID is NOT defined here. It will be passed in from docker-compose.
 CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]

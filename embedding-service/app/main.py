@@ -10,6 +10,10 @@ from contextlib import asynccontextmanager
 
 # We need the PositionalEncoding class
 from model import PositionalEncoding
+import sys
+from pathlib import Path
+
+sys.path.append(str(Path(__file__).resolve().parent))
 
 # --- Configuration ---
 VOCAB_SIZE = 95812 # Must match your trained vocab size

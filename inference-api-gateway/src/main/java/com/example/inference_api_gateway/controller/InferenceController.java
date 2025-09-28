@@ -4,7 +4,6 @@ import com.example.inference_api_gateway.dto.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
@@ -15,22 +14,35 @@ import java.util.List;
 
 @Slf4j
 @RestController
-@RequestMapping("/api/v1")
 public class InferenceController {
 
     private final WebClient.Builder webClientBuilder;
     private final WebClient gatingServiceClient;
     private final WebClient embeddingServiceClient;
     private final WebClient classifierServiceClient;
+    private final WebClient fullModelServiceClient;
 
     public InferenceController(WebClient.Builder webClientBuilder) {
         this.webClientBuilder = webClientBuilder;
         this.gatingServiceClient = webClientBuilder.baseUrl("http://gating-service:8000").codecs(clientCodecConfigurer -> clientCodecConfigurer.defaultCodecs().maxInMemorySize(16 * 1024 * 1024)).build();
         this.embeddingServiceClient = webClientBuilder.baseUrl("http://embedding-service:8000").codecs(clientCodecConfigurer -> clientCodecConfigurer.defaultCodecs().maxInMemorySize(16 * 1024 * 1024)).build();
         this.classifierServiceClient = webClientBuilder.baseUrl("http://classifier-service:8000").codecs(clientCodecConfigurer -> clientCodecConfigurer.defaultCodecs().maxInMemorySize(16 * 1024 * 1024)).build();
+        this.fullModelServiceClient = webClientBuilder.baseUrl("http://full-model-service:8000").codecs(clientCodecConfigurer -> clientCodecConfigurer.defaultCodecs().maxInMemorySize(16 * 1024 * 1024)).build();
     }
 
-    @PostMapping("/infer")
+    @PostMapping("/api/v2/infer")
+    public Mono<FullModelResponse> performMonolithInference(@RequestBody FullModelInferenceRequest request) {
+        System.out.println("Gateway (V2): Received monolith inference request, forwarding...");
+
+        // This is the simple forwarding logic
+        return this.fullModelServiceClient.post().uri("/infer")
+                .bodyValue(request) // Directly forward the request body
+                .retrieve()
+                .bodyToMono(FullModelResponse.class)
+                .doOnSuccess(response -> System.out.println("Gateway (V2): Received final prediction: " + response.predicted_category()));
+    }
+
+    @PostMapping("api/v1/infer")
     public Mono<FinalResponse> performInference(@RequestBody InferenceRequest request) {
 
         return this.gatingServiceClient.post().uri("/tokenize")
@@ -73,7 +85,7 @@ public class InferenceController {
     }
 
     private Mono<ExpertResponse> callExpertService(int expertId, ExpertRequest expertRequest) {
-        String expertUrl = "http://expert-" + expertId + ":8001";
+        String expertUrl = "http://expert-" + expertId + ":8000";
         WebClient expertClient = this.webClientBuilder.baseUrl(expertUrl).codecs(clientCodecConfigurer -> clientCodecConfigurer.defaultCodecs().maxInMemorySize(16 * 1024 * 1024)).build();
         return expertClient.post().uri("/process").bodyValue(expertRequest).retrieve().bodyToMono(ExpertResponse.class);
     }

@@ -12,6 +12,10 @@ from contextlib import asynccontextmanager
 from expert import Expert
 # We need the full model definition to create the embedding layer
 from model import MoETransformerClassifier
+import sys
+from pathlib import Path
+
+sys.path.append(str(Path(__file__).resolve().parent))
 
 # --- 1. Configuration ---
 D_MODEL = 128

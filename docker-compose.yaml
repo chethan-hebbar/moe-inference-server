@@ -7,13 +7,11 @@ x-expert-service-template: &expert-service-template
   volumes:
     - ./expert-service/app:/app
 
-# --- Service Definitions ---
 services:
-  # API Gateway Service
-  api-gateway:
+  inference-api-gateway:
     build:
       context: ./inference-api-gateway
-    image: moe-api-gateway:latest
+    image: moe-inference-api-gateway:latest
     ports:
       - "8080:8080"
     networks:
@@ -21,13 +19,21 @@ services:
     environment:
       - SPRING_CODEC_MAX_IN_MEMORY_SIZE=5MB
 
+  full-model-service:
+    build:
+      context: ./full-model-service
+    image: moe-full-model-service:latest
+    ports:
+      - "8011:8000"
+    networks:
+      - moe-network
+
   # Gating Service
   gating-service:
     build:
       context: ./gating-service
     image: moe-gating-service:latest
     ports:
-      # We'll keep this port exposed for now for direct testing.
       - "8000:8000"
     networks:
       - moe-network
@@ -38,7 +44,6 @@ services:
       context: ./embedding-service
     image: moe-embedding-service:latest
     ports:
-      # Expose on 8009 for direct testing
       - "8009:8000"
     networks:
       - moe-network
@@ -48,72 +53,63 @@ services:
       context: ./classifier-service
     image: moe-classifier-service:latest
     ports:
-      # Expose on 8010 for direct testing
       - "8010:8000"
     networks:
       - moe-network
-    # Add the healthcheck for consistency
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-      start_period: 20s
 
-  # --- All 8 Expert Services ---
   expert-0:
-    <<: *expert-service-template # Merge the template here
+    <<: *expert-service-template
     ports:
-      - "8001:8001"
+      - "8001:8000"
     environment:
       - EXPERT_ID=0
 
   expert-1:
     <<: *expert-service-template
     ports:
-      - "8002:8001"
+      - "8002:8000"
     environment:
       - EXPERT_ID=1
 
   expert-2:
     <<: *expert-service-template
     ports:
-      - "8003:8001"
+      - "8003:8000"
     environment:
       - EXPERT_ID=2
 
   expert-3:
     <<: *expert-service-template
     ports:
-      - "8004:8001"
+      - "8004:8000"
     environment:
       - EXPERT_ID=3
 
   expert-4:
     <<: *expert-service-template
     ports:
-      - "8005:8001"
+      - "8005:8000"
     environment:
       - EXPERT_ID=4
       
   expert-5:
     <<: *expert-service-template
     ports:
-      - "8006:8001"
+      - "8006:8000"
     environment:
       - EXPERT_ID=5
 
   expert-6:
     <<: *expert-service-template
     ports:
-      - "8007:8001"
+      - "8007:8000"
     environment:
       - EXPERT_ID=6
 
   expert-7:
     <<: *expert-service-template
     ports:
-      - "8008:8001"
+      - "8008:8000"
     environment:
       - EXPERT_ID=7
 

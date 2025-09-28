@@ -11,6 +11,11 @@ import torch.nn.functional as F
 from gating import Gating
 from dataloader import get_tokenizer_and_vocab
 
+import sys
+from pathlib import Path
+
+sys.path.append(str(Path(__file__).resolve().parent))
+
 # --- 1. Configuration ---
 # These parameters must match the model you trained in Phase 1
 D_MODEL = 128

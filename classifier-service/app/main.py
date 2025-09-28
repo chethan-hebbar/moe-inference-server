@@ -6,6 +6,10 @@ from pydantic import BaseModel
 from typing import List
 from pathlib import Path
 from contextlib import asynccontextmanager
+import sys
+from pathlib import Path
+
+sys.path.append(str(Path(__file__).resolve().parent))
 
 # --- Configuration ---
 D_MODEL = 128
