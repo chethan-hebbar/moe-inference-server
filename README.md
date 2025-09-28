@@ -2,8 +2,6 @@
 
 This project is a deep dive into building and serving a state-of-the-art AI model. It covers the end-to-end lifecycle, from implementing a Mixture of Experts (MoE) Transformer model from scratch in PyTorch to deploying it in a high-performance, distributed microservice architecture using Java, Python, and Docker.
 
-The primary goal is to demonstrate a comprehensive understanding of both frontier AI architectures and robust, scalable systems engineering principles. The final system supports two distinct inference workflows, showcasing different architectural trade-offs.
-
 ## Core Architectural Workflows
 
 This server exposes two API versions, each corresponding to a different backend architecture for performing inference.
